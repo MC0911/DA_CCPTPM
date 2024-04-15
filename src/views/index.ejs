@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đặt bàn nhà hàng</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  .floor-selection {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .floor-selection button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .tables {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .table {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    background-color: #ccc;
+    border: 1px solid #999;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .table:hover {
+    background-color: #bbb;
+  }
+  
+  .reservation-form {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+  }
+  
+  .reservation-form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .reservation-form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  .reservation-form button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <% if (user) { %>
+      <a href="/logout" class="btn">Đăng xuất</a>
+    <% } else { %>
+      <a href="/login" class="btn">Đăng nhập</a>
+      <a href="/register" class="btn">Đăng ký</a>
+    <% } %>
+  </header>
+  <h1>Chọn bàn để đặt</h1>
+  
+  <div class="floor-selection">
+    <button onclick="showFloor(1)">Tầng 1</button>
+    <button onclick="showFloor(2)">Tầng 2</button>
+  </div>
+  
+  <div class="tables" id="floor1" style="display: none;">
+    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 1')">Bàn 1</div>
+    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 2')">Bàn 2</div>
+    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 3')">Bàn 3</div>
+    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 4')">Bàn 4</div>
+    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 5')">Bàn 5</div>
+    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 6')">Bàn 6</div>
+    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 7')">Bàn 7</div>
+    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 8')">Bàn 8</div>
+  </div>
+  
+  <div class="tables" id="floor2" style="display: none;">
+    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 1')">Bàn 1</div>
+    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 2')">Bàn 2</div>
+    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 3')">Bàn 3</div>
+    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 4')">Bàn 4</div>
+    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 5')">Bàn 5</div>
+    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 6')">Bàn 6</div>
+  </div>
+  
+</div>
+
+<div class="reservation-form" id="reservationForm">
+  <span class="close-btn" onclick="closeReservationForm()">&times;</span>
+  <h2 id="tableReservation">Đặt bàn</h2>
+  <form>
+    <label for="name">Tên:</label>
+    <input type="text" id="name" name="name" required>
+    <label for="phone">Số điện thoại:</label>
+    <input type="text" id="phone" name="phone" required>
+    <label for="date">Ngày:</label>
+    <input type="text" id="date" name="date" required>
+    <label for="time">Giờ:</label>
+    <input type="text" id="time" name="time" required>
+    <button type="submit">Xác nhận đặt bàn</button>
+  </form>
+</div>
+
+<script>
+  function showFloor(floor) {
+    document.getElementById('floor1').style.display = (floor === 1) ? 'flex' : 'none';
+    document.getElementById('floor2').style.display = (floor === 2) ? 'flex' : 'none';
+  }
+  
+  function showReservationForm(table) {
+    document.getElementById('reservationForm').style.display = 'block';
+    document.getElementById('tableReservation').innerHTML = table;
+  }
+  
+  function closeReservationForm() {
+    document.getElementById('reservationForm').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
