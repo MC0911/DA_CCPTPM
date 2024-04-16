@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhà hàng Jira - Đặt bàn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            /* Increase the width for both boxes */
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            /* Use flexbox */
+            flex-direction: row;
+            /* Stack elements vertically */
+        }
+
+        .image-box {
+            flex: 1;
+            /* Take up 100% of the available width now */
+            padding: 20px;
+        }
+
+        .form-box {
+            flex: 1;
+            /* Take up 100% of the available width now */
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .accept-button {
+            background-color: #43b146;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px;
+        }
+
+        .notaccept-button {
+            background-color: #ef3427;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        form {
+            animation: fadeIn 1s;
+        }
+
+        .accept-button:hover {
+            background-color: #4CAF50;
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .notaccept-button:hover {
+            background-color: #F44336;
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        /* New Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-image: url("001.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            /*justify-content: space-between;*/
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'GreatVibes';
+            font-size: 35px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<header>
+    <h1>Nhà hàng Jira</h1>
+</header>
+
+<body>
+    <div class="container">
+        <div class="image-box">
+            <img src="dining-table.png" alt="Bàn">
+        </div>
+        <div class="form-box">
+            <label for="name">Tên khách hàng:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="phone">Số điện thoại:</label>
+            <input type="tel" id="phone" name="phone" required>
+            <label for="num">Số người:</label>
+            <input type="int" id="num" name="num" required>
+            <label for="time">Thời gian đặt bàn:</label>
+            <input type="datetime-local" id="time" name="time" required>
+            <button type="accept" class="accept-button">Chấp nhận đặt bàn</button>
+            <button type="notaccept" class="notaccept-button">Hủy đặt bàn</button>
+        </div>
+    </div>
+</body>
+
+</html>
