@@ -1,76 +1,58 @@
-// import pool from '../config/connectDB';
+import pool from '../config/connectDB';
 
-// let getBooktablepage = (req, res) => {
-//     return res.render('booktable.html', {
-//         user: req.user
-//     });
-// }
+const getFloors = async (req, res) => {
+    try {
+        const connection = await pool.getConnection();
+        const [rows] = await connection.query('SELECT * FROM floors');
+        connection.release();
+        
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error("Error occurred while fetching floors: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
 
-// let postBooktable = async (req, res) => {
-//     try {
-//         const {
-//             booktable_people,
-//             booktable_time,
-//             booktable_day,
-//             booktable_phone,
-//             booktable_note
-//         } = req.body;
+const getTablesByFloor = async (req, res) => {
+    try {
+        const { floor } = req.query;
+        const connection = await pool.getConnection();
+        const [rows] = await connection.query('SELECT * FROM tables WHERE floor_id = ?', [floor]);
+        connection.release();
 
-//         if (!booktable_people || !booktable_time || !booktable_day || !booktable_phone || !booktable_note) {
-//             return res.status(400).send('Dữ liệu từ form không đầy đủ');
-//         }
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error("Error occurred while fetching tables by floor: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
 
-//         const userId = req.user.id;
-//         const userName = req.user.name;
-//         const userEmail = req.user.email;
+const bookTable = async (req, res) => {
+    const { table_id, name, phonenumber, date, time, people, note } = req.body;
 
-//         const booktableData = {
-//             user_id: userId,
-//             user_name: userName,
-//             booktable_phone: booktable_phone,
-//             booktable_day:  booktable_day,
-//             booktable_time: booktable_time,
-//             booktable_people: booktable_people,
-//             user_email: userEmail,
-//             booktable_note: booktable_note
-//         };
+    try {
+        // Bước 1: Cập nhật trạng thái của bàn trong cơ sở dữ liệu thành "Có"
+        const connection = await pool.getConnection();
+        await connection.query('UPDATE tables SET status = ? WHERE id = ?', ['Có', table_id]);
+        connection.release();
 
-//         await insertBooktable(booktableData);
+        // Bước 2: Kiểm tra xem người dùng đã đăng nhập hay chưa
+        const user_id = req.user ? req.user.id : null;
 
-//         return res.redirect('/booktable'); // Chuyển hướng đến trang thành công
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).send('Lỗi máy chủ nội bộ');
-//     }
-// };
+        // Bước 3: Thêm thông tin đặt bàn vào bảng booktable
+        await pool.query('INSERT INTO booktable (table_id, user_id, name, phonenumber, date, time, people, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [table_id, user_id, name, phonenumber, date, time, people, note]);
 
-// let insertBooktable = async (booktableData) => {
-//     try {
-//         const {
-//             user_id,
-//             user_name,
-//             booktable_phone,
-//             booktable_day,
-//             booktable_time,
-//             booktable_people,
-//             user_email,
-//             booktable_note
-//         } = booktableData;
+        // Gửi phản hồi thành công
+        res.status(200).json({ message: 'Đặt bàn thành công' });
+    } catch (error) {
+        // Nếu có lỗi, gửi phản hồi lỗi
+        console.error('Error booking table: ', error);
+        res.status(500).json({ error: 'Đã xảy ra lỗi khi đặt bàn' });
+    }
+};
 
-//         const query = `
-//             INSERT INTO booktable (user_id, user_name, booktable_phone, booktable_day, booktable_time, booktable_people, user_email, booktable_note)
-//             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-//         `;
-
-//         await pool.query(query, [user_id, user_name, booktable_phone, booktable_day, booktable_time, booktable_people, user_email, booktable_note]);
-
-//         console.log("Dữ liệu đã được chèn vào bảng Booktable thành công!");
-//     } catch (error) {
-//         throw error;
-//     }
-// };
-
-// module.exports = {
-//     getBooktablepage,
-//     postBooktable
-// };
+module.exports = {
+    getFloors: getFloors,
+    getTablesByFloor: getTablesByFloor,
+    bookTable: bookTable
+};

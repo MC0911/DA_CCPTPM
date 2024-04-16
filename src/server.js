@@ -3,9 +3,8 @@ import configViewEngine from './config/viewEngine';
 import initWebRouter from './router/web';
 import cookieParser from 'cookie-parser';
 import session from "express-session";
+import connectFlash from "connect-flash";
 import passport from "passport";
-import flash from 'express-flash';
-
 require('dotenv').config();
 
 const app = express();
@@ -19,7 +18,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24 
+        maxAge: 1000 * 60 * 60 * 24 // 86400000 1 day
     }
 }));
 
@@ -28,9 +27,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 //
-app.use(flash());
-//
 configViewEngine(app);
+
+//
+app.use(connectFlash());
+
 //
 app.use(passport.initialize());
 app.use(passport.session());

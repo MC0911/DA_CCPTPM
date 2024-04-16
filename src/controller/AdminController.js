@@ -1,57 +1,28 @@
 import pool from "../config/connectDB";
 
+let getPageAdmin = async (req, res) => {
+    try {
+        // Truy vấn SQL để lấy thông tin về các tầng
+        let floors = await pool.query("SELECT * FROM floors");
 
-let getFoodmenu= async (req, res) => {
+        // Truy vấn SQL để lấy thông tin về các bàn
+        let tables = await pool.query("SELECT * FROM tables");
 
-    const [rows, fields] = await pool.execute('SELECT * FROM `food` ');
+        // Truy vấn SQL để lấy thông tin về các đặt bàn
+        let bookings = await pool.query("SELECT * FROM booktable");
 
-    return res.render('admin.ejs',{dataFoodmenu: rows})
-}
+        // Kết quả của các truy vấn đã được lấy thành công, truyền vào trang admin.ejs để render
+        return res.render("admin.ejs", { floors: floors[0], tables: tables[0], bookings: bookings[0] });
+    } catch (error) {
+        console.error("Error fetching data: ", error);
+        return res.status(500).send("Internal server error");
+    }
+};
 
 
-let getAddFoodpage = (req, res) => {
-    return res.render('admin-add.ejs')
-}
-
-let addFood = async (req, res) => {
-    let {food_name, food_loai, food_gia, food_img} = req.body;
-    await pool.execute('INSERT INTO food(food_name, food_loai, food_gia, food_img) values(?, ?, ?, ?)', 
-    [food_name, food_loai, food_gia, food_img]);
-    return res.redirect('/admin')
-}
-
-let deleteFood = async (req, res) => {
-    let foodId = req.body.food_id;
-    await pool.execute('DELETE FROM food WHERE food_id = ?', [foodId])
-    return res.redirect('/admin');
-}
-
-let getEditPage = async (req, res) => {
-    let foodId = req.params.food_id;
-    let [food] = await pool.execute(`SELECT * FROM food WHERE food_id  = ?`, [foodId]);
-    return res.render('admin-edit.ejs',{dataFoodmenu: food[0] });
-}
-
-let postUpdateFood = async (req, res) => {
-    let {food_name, food_loai, food_gia, food_img, food_id} = req.body;
-    await pool.execute('UPDATE food SET food_name= ?, food_loai = ? , food_gia = ? , food_img= ? WHERE food_id = ?',
-        [food_name, food_loai, food_gia, food_img, food_id]);
-    return res.redirect('/admin');
-}
-
-let getBookTablepage = async(req, res) =>{
-    const [rows, fields] = await pool.execute('SELECT * FROM `booktable` ');
-    return res.render('admin-booktable.ejs',{databooktable: rows})
-}
-
-let deleteBookTable = async (req, res) => {
-    let booktableId = req.body.booktable_id;
-    await pool.execute('DELETE FROM booktable WHERE booktable_id = ?', [booktableId])
-    return res.redirect('/admin-booktable');
-}
 
 
 
 module.exports = {
-    getFoodmenu, getAddFoodpage, addFood, deleteFood, getEditPage, postUpdateFood, getBookTablepage, deleteBookTable
+    getPageAdmin: getPageAdmin
 }

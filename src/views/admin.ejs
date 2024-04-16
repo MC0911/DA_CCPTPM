@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .add-button {
+            margin-top: 10px;
+        }
+
+        .add-button button {
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel</h1>
+
+        <h2>Tầng</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên tầng</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% floors.forEach(floor => { %>
+                    <tr>
+                        <td><%= floor.id %></td>
+                        <td><%= floor.name %></td>
+                        <td>
+                            <button onclick="editFloor('<%= floor.id %>')">Sửa</button>
+                            <button onclick="deleteFloor('<%= floor.id %>')">Xóa</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <div class="add-button">
+            <button onclick="addFloor()">Thêm mới tầng</button>
+        </div>
+
+        <h2>Bàn</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên bàn</th>
+                    <th>Tầng</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% tables.forEach(table => { %>
+                    <tr>
+                        <td><%= table.id %></td>
+                        <td><%= table.name %></td>
+                        <td><%= table.floor_id %></td>
+                        <td><%= table.status %></td>
+                        <td>
+                            <button onclick="editTable('<%= table.id %>')">Sửa</button>
+                            <button onclick="deleteTable('<%= table.id %>')">Xóa</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    
+        <div class="add-button">
+            <button onclick="addTable()">Thêm mới bàn</button>
+        </div>
+
+        <h2>Thông tin đặt bàn</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên khách hàng</th>
+                    <th>Số điện thoại</th>
+                    <th>Ngày</th>
+                    <th>Giờ</th>
+                    <th>Số người</th>
+                    <th>Ghi chú</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% bookings.forEach(booking => { %>
+                    <tr>
+                        <td><%= booking.id %></td>
+                        <td><%= booking.name %></td>
+                        <td><%= booking.phonenumber %></td>
+                        <td><%= booking.date %></td>
+                        <td><%= booking.time %></td>
+                        <td><%= booking.people %></td>
+                        <td><%= booking.note %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

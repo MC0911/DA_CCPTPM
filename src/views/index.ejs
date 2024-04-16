@@ -47,18 +47,25 @@
   }
   
   .table {
-    width: 100px;
-    height: 100px;
-    margin: 10px;
-    background-color: #ccc;
-    border: 1px solid #999;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    font-size: 18px;
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  border: 1px solid #999;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+  .table.available {
+    background-color: #7CFC00; /* Màu xanh */
+  }
+
+  .table.unavailable {
+    background-color: #FF6347; /* Màu đỏ */
   }
   
   .table:hover {
@@ -76,21 +83,30 @@
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     z-index: 999;
+    width: 400px; /* Độ rộng của form */
   }
-  
+
   .reservation-form label {
     display: block;
     margin-bottom: 10px;
   }
-  
-  .reservation-form input[type="text"] {
+
+  .reservation-form input[type="text"],
+  .reservation-form input[type="number"],
+  .reservation-form input[type="date"],
+  .reservation-form input[type="time"],
+  .reservation-form textarea {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 3px;
   }
-  
+
+  .reservation-form textarea {
+    height: 100px; /* Chiều cao của textarea */
+  }
+
   .reservation-form button {
     margin-top: 10px;
     padding: 10px 20px;
@@ -100,7 +116,7 @@
     border-radius: 3px;
     cursor: pointer;
   }
-  
+
   .close-btn {
     position: absolute;
     top: 10px;
@@ -115,37 +131,24 @@
 <div class="container">
   <header>
     <% if (user) { %>
-      <a href="/logout" class="btn">Đăng xuất</a>
+      <form action="/logout" method="POST">
+        <button class="btn">Logout</button>
+      </form>
     <% } else { %>
-      <a href="/login" class="btn">Đăng nhập</a>
-      <a href="/register" class="btn">Đăng ký</a>
+      <form action="/login">
+        <button class="btn">Đăng nhập</button>
+      </form>
+      <form action="/register">
+          <button class="btn">Đăng ký</button>
+      </form>
     <% } %>
   </header>
   <h1>Chọn bàn để đặt</h1>
   
-  <div class="floor-selection">
-    <button onclick="showFloor(1)">Tầng 1</button>
-    <button onclick="showFloor(2)">Tầng 2</button>
+  <div class="floor-selection" id="floorSelection">
   </div>
   
-  <div class="tables" id="floor1" style="display: none;">
-    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 1')">Bàn 1</div>
-    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 2')">Bàn 2</div>
-    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 3')">Bàn 3</div>
-    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 4')">Bàn 4</div>
-    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 5')">Bàn 5</div>
-    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 6')">Bàn 6</div>
-    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 7')">Bàn 7</div>
-    <div class="table" onclick="showReservationForm('Tầng 1 - Bàn 8')">Bàn 8</div>
-  </div>
-  
-  <div class="tables" id="floor2" style="display: none;">
-    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 1')">Bàn 1</div>
-    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 2')">Bàn 2</div>
-    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 3')">Bàn 3</div>
-    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 4')">Bàn 4</div>
-    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 5')">Bàn 5</div>
-    <div class="table" onclick="showReservationForm('Tầng 2 - Bàn 6')">Bàn 6</div>
+  <div class="tables" id="tablesContainer">
   </div>
   
 </div>
@@ -153,33 +156,113 @@
 <div class="reservation-form" id="reservationForm">
   <span class="close-btn" onclick="closeReservationForm()">&times;</span>
   <h2 id="tableReservation">Đặt bàn</h2>
-  <form>
+  <form id="reservationFormData">
     <label for="name">Tên:</label>
     <input type="text" id="name" name="name" required>
-    <label for="phone">Số điện thoại:</label>
-    <input type="text" id="phone" name="phone" required>
+    <label for="phonenumber">Số điện thoại:</label>
+    <input type="text" id="phonenumber" name="phonenumber" required>
     <label for="date">Ngày:</label>
-    <input type="text" id="date" name="date" required>
+    <input type="date" id="date" name="date" required>
     <label for="time">Giờ:</label>
-    <input type="text" id="time" name="time" required>
-    <button type="submit">Xác nhận đặt bàn</button>
+    <input type="time" id="time" name="time" required>
+    <label for="people">Số người:</label>
+    <input type="number" id="people" name="people" required>
+    <label for="note">Ghi chú:</label>
+    <textarea id="note" name="note" required></textarea>
+    <button type="submit" onclick="bookTable()">Xác nhận đặt bàn</button>
   </form>
 </div>
 
+
 <script>
-  function showFloor(floor) {
-    document.getElementById('floor1').style.display = (floor === 1) ? 'flex' : 'none';
-    document.getElementById('floor2').style.display = (floor === 2) ? 'flex' : 'none';
+  function fetchFloors() {
+    fetch('/floors')
+      .then(response => response.json())
+      .then(data => {
+        const floorSelection = document.getElementById('floorSelection');
+        floorSelection.innerHTML = ''; // Xóa bỏ nút tầng cũ trước khi thêm mới
+
+        data.forEach(floor => {
+          const button = document.createElement('button');
+          button.textContent = `Tầng ${floor.id}`;
+          button.onclick = () => showFloor(floor.id);
+          floorSelection.appendChild(button);
+        });
+      })
+      .catch(error => console.error("Error fetching floors: ", error));
   }
-  
-  function showReservationForm(table) {
-    document.getElementById('reservationForm').style.display = 'block';
+
+  function showFloor(floor) {
+  const tablesContainer = document.getElementById('tablesContainer');
+  tablesContainer.innerHTML = ''; 
+
+  fetch(`/tables?floor=${floor}`)
+    .then(response => response.json())
+    .then(data => {
+      data.forEach(table => {
+        const tableDiv = document.createElement('div');
+        tableDiv.className = 'table';
+        tableDiv.textContent = `${table.name}`; 
+        tableDiv.dataset.status = table.status; 
+        tableDiv.onclick = () => showReservationForm(`Tầng ${floor} - ${table.name}`, table.id);
+        
+        if (table.status === 'Có') {
+          tableDiv.classList.add('available');
+        } else {
+          tableDiv.classList.add('unavailable');
+        }
+        
+        tablesContainer.appendChild(tableDiv);
+      });
+    })
+    .catch(error => console.error("Error fetching tables: ", error));
+}
+
+
+function bookTable() {
+    const reservationFormData = document.getElementById('reservationFormData');
+    const tableId = reservationFormData.dataset.tableId; 
+
+    const formData = {};
+    formData['table_id'] = tableId; 
+
+    const formInputs = reservationFormData.querySelectorAll('input, textarea');
+    formInputs.forEach(input => {
+        formData[input.name] = input.value;
+    });
+
+    fetch('/booktable', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message); 
+        closeReservationForm();
+    })
+    .catch(error => console.error("Error booking table: ", error));
+}
+
+
+
+
+  function showReservationForm(table, tableId) {
+    const reservationForm = document.getElementById('reservationForm');
+    const reservationFormData = document.getElementById('reservationFormData');
+    reservationForm.style.display = 'block';
     document.getElementById('tableReservation').innerHTML = table;
+    reservationFormData.dataset.tableId = tableId; // Lưu tableId vào dataset của form
   }
   
   function closeReservationForm() {
     document.getElementById('reservationForm').style.display = 'none';
   }
+
+  // Gọi hàm fetchFloors khi trang được tải lần đầu
+  fetchFloors();
 </script>
 
 </body>
