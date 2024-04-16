@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhà hàng Jira - Đặt bàn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            /* Increase the width for both boxes */
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            /* Use flexbox */
+            flex-direction: row;
+            /* Arrange items horizontally */
+            align-items: center;
+            /* Center items vertically */
+        }
+
+        .image-box {
+            flex: 1;
+            /* Take up 50% of the available width */
+            padding: 20px;
+        }
+
+        .form-box {
+            flex: 1;
+            /* Take up 50% of the available width */
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .button {
+            background-color: #0D6ABD;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        form {
+            animation: fadeIn 1s;
+        }
+
+        .button:hover {
+            background-color: #1877F2;
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        /* New Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-image: url("001.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            /*justify-content: space-between;*/
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'GreatVibes';
+            font-size: 35px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<header>
+    <h1>Nhà hàng Jira</h1>
+</header>
+
+<body>
+    <div class="container">
+        <div class="image-box">
+            <img src="dining-table.png" alt="Bàn">
+        </div>
+        <div class="form-box">
+            <label for="name">Tên khách hàng:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="phone">Số điện thoại:</label>
+            <input type="tel" id="phone" name="phone" required>
+            <label for="num">Số người:</label>
+            <input type="int" id="num" name="num" required>
+            <label for="time">Thời gian đặt bàn:</label>
+            <input type="datetime-local" id="time" name="time" required>
+            <a href="Index.html" class="button">Xác nhận đặt bàn</a>
+        </div>
+    </div>
+</body>
+
+</html>
