@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đặt bàn nhà hàng</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  .floor-selection {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .floor-selection button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .tables {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .table {
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  border: 1px solid #999;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+  .table.available {
+    background-color: #7CFC00; /* Màu xanh */
+  }
+
+  .table.unavailable {
+    background-color: #FF6347; /* Màu đỏ */
+  }
+  
+  .table:hover {
+    background-color: #bbb;
+  }
+  
+  .reservation-form {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    width: 400px; /* Độ rộng của form */
+  }
+
+  .reservation-form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .reservation-form input[type="text"],
+  .reservation-form input[type="number"],
+  .reservation-form input[type="date"],
+  .reservation-form input[type="time"],
+  .reservation-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
+  .reservation-form textarea {
+    height: 100px; /* Chiều cao của textarea */
+  }
+
+  .reservation-form button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <% if (user) { %>
+      <form action="/logout" method="POST">
+        <button class="btn">Logout</button>
+      </form>
+    <% } else { %>
+      <form action="/login">
+        <button class="btn">Đăng nhập</button>
+      </form>
+      <form action="/register">
+          <button class="btn">Đăng ký</button>
+      </form>
+    <% } %>
+  </header>
+  <h1>Chọn bàn để đặt</h1>
+  
+  <div class="floor-selection" id="floorSelection">
+  </div>
+  
+  <div class="tables" id="tablesContainer">
+  </div>
+  
+</div>
+
+<div class="reservation-form" id="reservationForm">
+  <span class="close-btn" onclick="closeReservationForm()">&times;</span>
+  <h2 id="tableReservation">Đặt bàn</h2>
+  <form id="reservationFormData">
+    <label for="name">Tên:</label>
+    <input type="text" id="name" name="name" required>
+    <label for="phonenumber">Số điện thoại:</label>
+    <input type="text" id="phonenumber" name="phonenumber" required>
+    <label for="date">Ngày:</label>
+    <input type="date" id="date" name="date" required>
+    <label for="time">Giờ:</label>
+    <input type="time" id="time" name="time" required>
+    <label for="people">Số người:</label>
+    <input type="number" id="people" name="people" required>
+    <label for="note">Ghi chú:</label>
+    <textarea id="note" name="note" required></textarea>
+    <button type="submit" onclick="bookTable()">Xác nhận đặt bàn</button>
+  </form>
+</div>
+
+
+<script>
+  function fetchFloors() {
+    fetch('/floors')
+      .then(response => response.json())
+      .then(data => {
+        const floorSelection = document.getElementById('floorSelection');
+        floorSelection.innerHTML = ''; // Xóa bỏ nút tầng cũ trước khi thêm mới
+
+        data.forEach(floor => {
+          const button = document.createElement('button');
+          button.textContent = `Tầng ${floor.id}`;
+          button.onclick = () => showFloor(floor.id);
+          floorSelection.appendChild(button);
+        });
+      })
+      .catch(error => console.error("Error fetching floors: ", error));
+  }
+
+  function showFloor(floor) {
+  const tablesContainer = document.getElementById('tablesContainer');
+  tablesContainer.innerHTML = ''; 
+
+  fetch(`/tables?floor=${floor}`)
+    .then(response => response.json())
+    .then(data => {
+      data.forEach(table => {
+        const tableDiv = document.createElement('div');
+        tableDiv.className = 'table';
+        tableDiv.textContent = `${table.name}`; 
+        tableDiv.dataset.status = table.status; 
+        tableDiv.onclick = () => showReservationForm(`Tầng ${floor} - ${table.name}`, table.id);
+        
+        if (table.status === 'Có') {
+          tableDiv.classList.add('available');
+        } else {
+          tableDiv.classList.add('unavailable');
+        }
+        
+        tablesContainer.appendChild(tableDiv);
+      });
+    })
+    .catch(error => console.error("Error fetching tables: ", error));
+}
+
+
+function bookTable() {
+    const reservationFormData = document.getElementById('reservationFormData');
+    const tableId = reservationFormData.dataset.tableId; 
+
+    const formData = {};
+    formData['table_id'] = tableId; 
+
+    const formInputs = reservationFormData.querySelectorAll('input, textarea');
+    formInputs.forEach(input => {
+        formData[input.name] = input.value;
+    });
+
+    fetch('/booktable', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message); 
+        closeReservationForm();
+    })
+    .catch(error => console.error("Error booking table: ", error));
+}
+
+
+
+
+  function showReservationForm(table, tableId) {
+    const reservationForm = document.getElementById('reservationForm');
+    const reservationFormData = document.getElementById('reservationFormData');
+    reservationForm.style.display = 'block';
+    document.getElementById('tableReservation').innerHTML = table;
+    reservationFormData.dataset.tableId = tableId; // Lưu tableId vào dataset của form
+  }
+  
+  function closeReservationForm() {
+    document.getElementById('reservationForm').style.display = 'none';
+  }
+
+  // Gọi hàm fetchFloors khi trang được tải lần đầu
+  fetchFloors();
+</script>
+
+</body>
+</html>
