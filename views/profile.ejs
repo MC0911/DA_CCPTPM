@@ -44,16 +44,22 @@
 
         .logout-link:hover {
             text-decoration: underline;
-        }
+        }  
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h2>Welcome <%= user.username %></h2>
-        <p>Your email: <%= user.email %></p>
-        <a href="/" class="logout-link">Logout</a>
-    </div>
+    <header>
+        <div class="container">
+            <h2>Welcome <%= user.username %></h2>
+            <p>Your email: <%= user.email %></p>
+            <a href="/" class="logout-link">Logout</a>
+        </div>
+    </header>
+    
+
+    
+
 </body>
 
 </html>
