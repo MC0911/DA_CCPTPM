@@ -34,7 +34,21 @@ let initWebRouter = (app) => {
     router.post('/booktable', BooktableController.bookTable);
     //Admin
     router.get('/admin', AdminController.getPageAdmin);
-
+    //Add floor
+    router.get('/add_floor', AdminController.getAddFloorPage);
+    router.post('/admin', AdminController.addFloor);
+    //Edit floor
+    router.put('/admin/floors/:id', AdminController.editFloor);
+    //Delete floor
+    router.post('delete_floor/:id', AdminController.deleteFloor);
+    //Add table
+    router.get('/add_table', AdminController.getAddTablepage);
+    router.post('/admin', AdminController.addTable);
+    //Edit table
+    router.get('/edit_table/:id', AdminController.editTablePage);
+    router.post('/admin', AdminController.editTable);
+    //Delete table
+    router.post('/delete_table/:id', AdminController.deleteTable);
     return app.use('/', router)
 };
 
