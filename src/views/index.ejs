@@ -184,7 +184,7 @@
 
         data.forEach(floor => {
           const button = document.createElement('button');
-          button.textContent = `Tầng ${floor.id}`;
+          button.textContent = `${floor.name}`;
           button.onclick = () => showFloor(floor.id);
           floorSelection.appendChild(button);
         });

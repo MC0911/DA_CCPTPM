@@ -13,14 +13,14 @@
     <section class="container forms">
         <div class="form login">
             <div class="form-content">
-                <header>Đăng nhập</header>
                 <form method="POST" action="/login">
-                    <div class="field input-field">
-                        <input type="email" name="email" id="email" placeholder="Nhập Email" class="form-control" required>
-                    </div>
-                    <div class="field input-field">
-                        <input type="password" name="password" id="password" placeholder="Nhập mật khẩu" class="password" required>
-                    </div>
+                    <h2>Đăng nhập</h2>
+                    <div class="container">
+                        <label for="email"><b>Tài khoản</b></label>
+                        <input type="email" placeholder="Nhập Email" name="email" required>
+            
+                        <label for="password"><b>Mật khẩu</b></label>
+                        <input type="password" placeholder="Nhập mật khẩu" name="password" required>
                     <div class="form-link">
                         <a href="/index" class="back-home">Về trang chủ</a>
                     </div>

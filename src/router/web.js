@@ -36,19 +36,19 @@ let initWebRouter = (app) => {
     router.get('/admin', AdminController.getPageAdmin);
     //Add floor
     router.get('/add_floor', AdminController.getAddFloorPage);
-    router.post('/admin', AdminController.addFloor);
-    //Edit floor
-    router.put('/admin/floors/:id', AdminController.editFloor);
+    router.post('/add_floor', AdminController.addFloor);
     //Delete floor
-    router.post('delete_floor/:id', AdminController.deleteFloor);
+    router.post('/delete_floor/:id', AdminController.deleteFloor);
     //Add table
     router.get('/add_table', AdminController.getAddTablepage);
-    router.post('/admin', AdminController.addTable);
+    router.post('/add_table', AdminController.addTable);
     //Edit table
     router.get('/edit_table/:id', AdminController.editTablePage);
-    router.post('/admin', AdminController.editTable);
+    router.post('/edit_table', AdminController.editTable);
     //Delete table
     router.post('/delete_table/:id', AdminController.deleteTable);
+    //Complete table
+    router.post('/complete/:id', AdminController.completeTable);
     return app.use('/', router)
 };
 

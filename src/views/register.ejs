@@ -13,27 +13,27 @@
     <section class="container forms">
         <div class="form signup">
             <div class="form-content">
-                <header>Đăng ký</header>
-                <form method="POST" action="/register" onsubmit="register()">
-                    <div class="field input-field">
-                        <input type="text" class="form-control" name="name" id="name" placeholder="Nhập Tên" required>
-                    </div>
-                    <div class="field input-field">
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Nhập Email"  required>
-                    </div>
-                    <div class="field input-field">
-                        <input type="password" class="password" name="password" id="password" placeholder="Nhập mật khẩu"  required>
-                    </div>
-                    <div class="field input-field">
-                        <input type="text" class="form-control" name="phonenumber" id="phonenumber" placeholder="Nhập số điện thoại"  required>
-                    </div>
+                <form method="POST" action="/register">
+                    <h2>Đăng ký</h2>
+                    <div class="container">
+                        <label for="name"><b>Tên đăng nhập</b></label>
+                        <input type="text" placeholder="Nhập tên đăng nhập" name="name" required>
+            
+                        <label for="email"><b>Email</b></label>
+                        <input type="email" placeholder="Nhập email" name="email" required>
+            
+                        <label for="password"><b>Mật khẩu</b></label>
+                        <input type="password" placeholder="Nhập mật khẩu" name="password" required>
 
+                        <label for="phonenumber"><b>Mật khẩu</b></label>
+                        <input type="number" placeholder="Nhập số điện thoại" name="phonenumber" required>
+                    </div>
                     <button type="submit" class="field button-field">Đăng ký</button>
+                    <div class="form-link">
+                        <span>Bạn đã có tài khoản? <a href="/login" class="link login-link">Đăng nhập</a></span>
+                    </div>
                 </form>
 
-                <div class="form-link">
-                    <span>Bạn đã có tài khoản? <a href="/login" class="link login-link">Đăng nhập</a></span>
-                </div>
             </div>
         </div>
     </section>
